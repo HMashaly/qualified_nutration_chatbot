@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 import psycopg
 from psycopg.rows import dict_row
 
-
 load_dotenv()
 
 
@@ -21,6 +20,12 @@ def _required_env(name: str) -> str:
 
 
 def get_connection():
+    # Try DATABASE_URL first (Neon style)
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        return psycopg.connect(database_url, row_factory=dict_row)
+    
+    # Fall back to individual POSTGRES_* variables
     return psycopg.connect(
         host=_required_env("POSTGRES_HOST"),
         port=int(os.getenv("POSTGRES_PORT", "5432")),

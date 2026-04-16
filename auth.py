@@ -5,7 +5,7 @@ Authentication and admin helpers for qualified_nutration_chatbot.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta, timezone
 import re
 from typing import Any
 
@@ -167,7 +167,7 @@ def get_admin_dashboard_stats() -> dict[str, Any]:
 
 
 def is_rate_limited(failed_attempts: list[str], now: datetime | None = None) -> tuple[bool, int]:
-    now = now or datetime.now(UTC)
+    now = now or datetime.now(timezone.utc)
     cutoff = now - timedelta(minutes=5)
     recent_attempts = [
         item for item in failed_attempts

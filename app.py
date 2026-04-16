@@ -9,7 +9,7 @@ Run:
 import json
 import sys
 import time
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 from pathlib import Path
 import re
 
@@ -188,7 +188,7 @@ def render_auth_screen():
                         st.success(result.message)
                         st.rerun()
                     else:
-                        st.session_state.auth_failed_attempts.append(datetime.now(UTC).isoformat())
+                        st.session_state.auth_failed_attempts.append(datetime.now(timezone.utc).isoformat())
                         st.error(result.message)
 
         with tabs[1]:
@@ -353,9 +353,13 @@ def render_active_badges(profile: dict):
 
 
 def render_example_questions():
+    """Render example questions as non-clickable suggestions"""
     if st.session_state.messages:
         return
+    
     st.markdown("#### 💡 Try asking:")
+    
+    # Use columns to display examples as non-clickable text
     example_cols = st.columns(3)
     examples = [
         "What are the best vegan protein sources?",
@@ -365,17 +369,23 @@ def render_example_questions():
         "What supplements do vegans need?",
         "Give me a gluten-free meal plan for weight loss",
     ]
+    
     for i, example in enumerate(examples):
         with example_cols[i % 3]:
-            if st.button(example, key=f"ex_{i}", use_container_width=True):
-                st.session_state.messages.append(
-                    {
-                        "role": "user",
-                        "content": example,
-                        "timestamp": datetime.now().strftime("%H:%M"),
-                    }
-                )
-                st.rerun()
+            # Display as plain text in a styled container (not clickable)
+            st.markdown(f"""
+            <div style="
+                background-color: #f0f2f6;
+                padding: 8px 12px;
+                border-radius: 8px;
+                margin: 4px 0;
+                font-size: 0.85rem;
+                color: #1f2937;
+                border-left: 3px solid #2d6a4f;
+            ">
+                💡 {example}
+            </div>
+            """, unsafe_allow_html=True)
 
 
 def render_chat_history():
