@@ -164,60 +164,48 @@ def render_auth_screen():
     render_header()
     st.info("Sign in to use the chatbot. Admin accounts will also see the audit/logs area.")
 
-    left, right = st.columns([1.2, 1])
-    with left:
-        tabs = st.tabs(["Sign In", "Register"])
+    # Only show login/register, remove the right column with PostgreSQL setup
+    tabs = st.tabs(["Sign In", "Register"])
 
-        with tabs[0]:
-            with st.form("login_form", clear_on_submit=False):
-                email = st.text_input("Email")
-                password = st.text_input("Password", type="password")
-                submitted = st.form_submit_button("Sign In", use_container_width=True)
-            if submitted:
-                limited, retry_after = is_rate_limited(st.session_state.auth_failed_attempts)
-                if limited:
-                    st.error(f"Too many failed attempts. Try again in about {retry_after} seconds.")
+    with tabs[0]:
+        with st.form("login_form", clear_on_submit=False):
+            email = st.text_input("Email")
+            password = st.text_input("Password", type="password")
+            submitted = st.form_submit_button("Sign In", use_container_width=True)
+        if submitted:
+            limited, retry_after = is_rate_limited(st.session_state.auth_failed_attempts)
+            if limited:
+                st.error(f"Too many failed attempts. Try again in about {retry_after} seconds.")
+            else:
+                result = authenticate_user(email, password)
+                if result.ok:
+                    st.session_state.user_id = result.user["id"]
+                    st.session_state.user_email = result.user["email"]
+                    st.session_state.user_role = result.user["role"]
+                    st.session_state.is_authenticated = True
+                    st.session_state.auth_failed_attempts = []
+                    st.success(result.message)
+                    st.rerun()
                 else:
-                    result = authenticate_user(email, password)
-                    if result.ok:
-                        st.session_state.user_id = result.user["id"]
-                        st.session_state.user_email = result.user["email"]
-                        st.session_state.user_role = result.user["role"]
-                        st.session_state.is_authenticated = True
-                        st.session_state.auth_failed_attempts = []
-                        st.success(result.message)
-                        st.rerun()
-                    else:
-                        st.session_state.auth_failed_attempts.append(datetime.now(timezone.utc).isoformat())
-                        st.error(result.message)
+                    st.session_state.auth_failed_attempts.append(datetime.now(timezone.utc).isoformat())
+                    st.error(result.message)
 
-        with tabs[1]:
-            with st.form("register_form", clear_on_submit=False):
-                new_email = st.text_input("Email", key="register_email")
-                new_password = st.text_input("Password", type="password", key="register_password")
-                confirm_password = st.text_input("Confirm password", type="password")
-                submitted = st.form_submit_button("Create Account", use_container_width=True)
-            if submitted:
-                if new_password != confirm_password:
-                    st.error("Passwords do not match.")
+    with tabs[1]:
+        with st.form("register_form", clear_on_submit=False):
+            new_email = st.text_input("Email", key="register_email")
+            new_password = st.text_input("Password", type="password", key="register_password")
+            confirm_password = st.text_input("Confirm password", type="password")
+            submitted = st.form_submit_button("Create Account", use_container_width=True)
+        if submitted:
+            if new_password != confirm_password:
+                st.error("Passwords do not match.")
+            else:
+                result = create_user(new_email, new_password)
+                if result.ok:
+                    st.success(result.message)
                 else:
-                    result = create_user(new_email, new_password)
-                    if result.ok:
-                        st.success(result.message)
-                    else:
-                        st.error(result.message)
+                    st.error(result.message)
 
-    with right:
-        st.markdown("### Local PostgreSQL Setup")
-        st.code(
-            "createdb qualified_nutration_chatbot\n"
-            "psql -d qualified_nutration_chatbot -f sql/schema.sql",
-            language="bash",
-        )
-        st.markdown(
-            "Use a normal registered account first, then promote the first admin with "
-            "`UPDATE users SET role = 'admin' WHERE email = 'your_admin_email@example.com';`"
-        )
 
 
 def render_sidebar() -> dict:

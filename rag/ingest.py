@@ -1,7 +1,8 @@
 """
 RAG Ingestion Pipeline
-Run this ONCE to embed knowledge base into ChromaDB:
-    python rag/ingest.py
+
+Locally:   python rag/ingest.py
+On cloud:  auto-called by app.py on first boot if chroma_db is missing
 """
 
 import os
@@ -15,12 +16,16 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 
-DATA_DIR = Path(__file__).parent.parent / "knowledgebase"
-CHROMA_DIR = Path(__file__).parent.parent / "chroma_db"
+# Support both local (knowledgebase/) and repo root layouts
+_ROOT = Path(__file__).parent.parent
+DATA_DIR  = _ROOT / "knowledgebase"
+CHROMA_DIR = _ROOT / "chroma_db"
 
 
 def ingest():
     print(f"📂 Loading documents from: {DATA_DIR}")
+    if not DATA_DIR.exists():
+        raise FileNotFoundError(f"Knowledge base folder not found: {DATA_DIR}")
 
     loader = DirectoryLoader(
         str(DATA_DIR),
@@ -48,13 +53,16 @@ def ingest():
         persist_directory=str(CHROMA_DIR),
         collection_name="nutribot",
     )
-
     print(f"✅ Done! Stored {len(chunks)} chunks in {CHROMA_DIR}")
     return vectorstore
 
 
 def load_vectorstore():
-    """Load existing ChromaDB — use this in the app."""
+    """Load existing ChromaDB. Auto-ingests if missing (needed on Streamlit Cloud)."""
+    if not (CHROMA_DIR / "chroma.sqlite3").exists():
+        print("⚠️  ChromaDB not found — running ingest automatically...")
+        ingest()
+
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
     return Chroma(
         persist_directory=str(CHROMA_DIR),

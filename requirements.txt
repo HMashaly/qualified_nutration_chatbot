@@ -1,13 +1,24 @@
+# ── Core LangChain stack ────────────────────────────────────────────────────
 langchain==0.3.25
 langchain-openai==0.3.16
 langchain-community==0.3.24
 langchain-chroma==0.2.4
 chromadb>=1.0.9
-streamlit==1.45.0
+
+# ── OpenAI ──────────────────────────────────────────────────────────────────
 openai==1.75.0
-python-dotenv==1.1.0
 tiktoken==0.9.0
-psycopg[binary]
-passlib[bcrypt]
-email-validator
- 
+
+# ── Streamlit ───────────────────────────────────────────────────────────────
+streamlit==1.45.0
+
+# ── PostgreSQL — binary build, no C compiler needed on Streamlit Cloud ──────
+psycopg[binary]==3.2.6
+
+# ── Auth ────────────────────────────────────────────────────────────────────
+passlib==1.7.4
+bcrypt==4.0.1
+email-validator==2.2.0
+
+# ── Utils ───────────────────────────────────────────────────────────────────
+python-dotenv==1.1.0
