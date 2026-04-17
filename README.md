@@ -305,7 +305,7 @@ pip install streamlit langchain langchain-openai langchain-community langchain-c
 
 ## 4️⃣ Environment variables (.env)
 
-Create a .env file based on env-sample:
+Create a .env file based on .env-sampl.txt:
 ```
 OPENAI_API_KEY=your_openai_key_here
 DATABASE_URL=postgresql://user:password@localhost:5432/dbname
