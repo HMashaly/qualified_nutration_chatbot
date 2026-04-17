@@ -1,4 +1,0 @@
-0000000000000000000000000000000000000000 d10fd850b699de364a83b0084dfb61f514e1c4e7 HMashaly <h.elmashaly@gmail.com> 1776338790 +0200	commit (initial): Initial commit
-d10fd850b699de364a83b0084dfb61f514e1c4e7 a197c2a6f9c90058c0bac2fa9b2c24aa491944ef HMashaly <h.elmashaly@gmail.com> 1776339215 +0200	commit: rename to qualified_nutration_chatbot
-a197c2a6f9c90058c0bac2fa9b2c24aa491944ef a197c2a6f9c90058c0bac2fa9b2c24aa491944ef HMashaly <h.elmashaly@gmail.com> 1776339279 +0200	Branch: renamed refs/heads/master to refs/heads/main
-a197c2a6f9c90058c0bac2fa9b2c24aa491944ef 4ab5aadcb7f97d2db13c315843db08eb7d24b46b HMashaly <h.elmashaly@gmail.com> 1776339642 +0200	commit: .gitignore
