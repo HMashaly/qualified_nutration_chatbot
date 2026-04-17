@@ -13,7 +13,7 @@ tiktoken==0.9.0
 streamlit==1.45.0
 
 # ── PostgreSQL — binary build, no C compiler needed on Streamlit Cloud ──────
-psycopg[binary]==3.2.6
+psycopg[binary]>=3.3.0
 
 # ── Auth ────────────────────────────────────────────────────────────────────
 passlib==1.7.4
