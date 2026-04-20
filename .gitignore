@@ -4,5 +4,4 @@ __pycache__/
 *.pyc
 .DS_Store
 .git-backup/
-documents/ChromaDB/
 chroma_db/
