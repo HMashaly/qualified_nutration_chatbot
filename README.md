@@ -234,7 +234,7 @@ flowchart TD
 
     B -->|Login/Register| C[Streamlit Session State Initialized]
 
-    C --> D[Sidebar Profile Input (diet, goals, stats)]
+    C --> D[Sidebar Profile Input: diet, goals, stats]
     D --> E[Chat Interface]
 
     E --> F[User submits question via chat_input]
